@@ -89,7 +89,7 @@ str(summary_payroll_a_2017)
 str(summary_payroll_a_2018)
 str(summary_payroll_a_2020) #Note the extra column "numplaza"
 
-# Reload with "fechaIngreso" (entry date) as date:
+# Convert "fechaIngreso" to date:
 # In the datasets there is a column "uma" that stands for "Unidad de Medida y Actualización". This is an economic reference in mexican pesos which
 # determines the amount of payment of obligations and assumptions established in federal laws.
 # This feature is not on the original data but was added for modeling purposes that we will explain later.
@@ -231,7 +231,7 @@ str(concepts_payroll_a)
 # (Discard tax_scenario = 0 which is an exception out of the scope of this test)
 final_set <- concepts_payroll_a %>%
   filter(tipind == "P",Organismo_DET =="ADMINISTRATIVO",Escenario!=0) %>%
-  select(-id_emp,-idNomina,-clave,-claveSatAnterior,-descripcionSatAnterior,-tipoSatAnterior,-Organismo,-numplaza,-Organismo_DET)
+  select(-id_emp,-clave,-claveSatAnterior,-descripcionSatAnterior,-tipoSatAnterior,-Organismo,-numplaza,-Organismo_DET)
 
 str(final_set)
 
@@ -239,8 +239,9 @@ str(final_set)
 names(final_set)[2] <- "idind"
 names(final_set)[3] <- "total"
 names(final_set)[4] <- "month"
-names(final_set)[8] <- "job_title"
-names(final_set)[10] <- "tax_scenario"
+names(final_set)[6] <- "payroll_name"
+names(final_set)[9] <- "job_title"
+names(final_set)[11] <- "tax_scenario"
 
 str(final_set)
 
@@ -257,6 +258,18 @@ id_ref <- final_set %>%
 final_set <- left_join(final_set,id_ref,by="ID_Ref")
 
 final_set <- final_set %>% select(-ID_Ref)
+
+str(final_set)
+
+# We will do the same with payroll_name:
+id_payroll <- final_set %>%
+  distinct(payroll_name) %>%
+  rowid_to_column() %>%
+  rename(id_payroll = rowid)
+
+final_set <- left_join(final_set,id_payroll,by="payroll_name")
+
+final_set <- final_set %>% select(-payroll_name)
 
 str(final_set)
 
@@ -300,8 +313,10 @@ final_set <- final_set %>% select(-id_concept)
 # Our final set is:
 str(final_set)
 
-# Export result to csv:
+# Export to csv data sets of modified variables:
 write.csv(id_compensation,"exports/id_compensations.csv")
+write.csv(job_title,"exports/job_title.csv")
+write.csv(id_payroll,"exports/id_payroll.csv")
 
 # Save dataset:
 saveRDS(final_set,"rda/final_set.rda")

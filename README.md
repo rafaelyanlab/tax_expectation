@@ -1,7 +1,6 @@
-H
-arvardx Data Science Project
+Harvardx Data Science Project
 
-This project contains three main files:
+This project contains four main files:
 
 1). 01_pre_processing.R = This code is just for illustration purposes so the reader can look to some of the data wrangling steps performed.
 
@@ -12,4 +11,3 @@ This project contains three main files:
 3). movielens_final.pdf = This is the pdf knitted with R markdown (.Rmd file). 
 
 First, you must run the 02_tax_expectation.R script since some objects of the .Rmd file are created with the R script. While running it, you can read the corresponding sections in the PDF file (these sections are indicated as footnotes in the PDF).
-
